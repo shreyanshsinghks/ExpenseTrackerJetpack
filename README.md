@@ -1,4 +1,4 @@
-# Expense Tracker App
+# 💰 Expense Tracker App 💰
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android-brightgreen" alt="Platform">
@@ -12,26 +12,26 @@
   <img src="https://github.com/shreyanshsinghks/ExpenseTrackerJetpack/assets/120413995/9768f747-86c8-47b5-ac73-42855df2c087" alt="Screenshot 3" width="200"/>
 </p>
 
-## About the Project
+## 🌟 About the Project
 
 This Expense Tracker app helps you manage your finances effectively by keeping track of your expenses and income. Built using Kotlin and Jetpack Compose, it offers a modern and responsive UI with smooth user interactions.
 
-## Features
+## ✨ Features
 
-- Add, edit, and delete expenses and income
-- View detailed statistics of your expenses
-- Filter transactions by date and category
-- Responsive and intuitive UI
+- ➕ Add, edit, and delete expenses and income
+- 📊 View detailed statistics of your expenses
+- 🔍 Filter transactions by date and category
+- 📱 Responsive and intuitive UI
 
-## Getting Started
+## 🚀 Getting Started
 
-### Prerequisites
+### ✅ Prerequisites
 
-- Android Studio 4.0 or higher
-- Kotlin 1.5 or higher
-- Gradle 6.1.1 or higher
+- 🛠️ Android Studio 4.0 or higher
+- 💻 Kotlin 1.5 or higher
+- ⚙️ Gradle 6.1.1 or higher
 
-### Installation
+### 📥 Installation
 
 1. Clone the repo
    ```sh
