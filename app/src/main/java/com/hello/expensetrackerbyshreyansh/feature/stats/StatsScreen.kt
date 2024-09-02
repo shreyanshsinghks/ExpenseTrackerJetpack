@@ -59,7 +59,7 @@ fun StatsScreen(navController: NavController) {
                 text = "Statistics",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = Color.Black,
                 modifier = Modifier
                     .padding(16.dp)
                     .align(Alignment.Center)
@@ -85,25 +85,14 @@ fun StatsScreen(navController: NavController) {
     }) { innerPadding ->
         val viewModel =
             StatsViewModelFactory(navController.context).create(StatsViewModel::class.java)
-        val dataState = viewModel.entries.collectAsState(initial = emptyList())
         Column(modifier = Modifier.padding(innerPadding)) {
             val chartEntries = viewModel.entries.collectAsState(initial = emptyList())
             if (chartEntries.value.isEmpty()) {
                 CircularProgressIndicator()
             } else {
-                val points = viewModel.getEntriesForChart(dataState.value)
-                Log.d("pointsData", "StatsScreen: $points")
-                val points2 = listOf(
-                    Point(0f, 40f),
-                    Point(1f, 90f),
-                    Point(2f, 0f),
-                    Point(3f, 10f)
-                )
-                if (points.isEmpty()) {
-                    Toast.makeText(LocalContext.current, "No Data Yet", Toast.LENGTH_SHORT).show()
-                } else {
-                    MakeLineChart(points)
-                }
+                val (points, xAxisData) = viewModel.getEntriesForChart(chartEntries.value)
+                val maxValue = points.maxByOrNull { it.y }?.y?.toInt() ?: 0
+                MakeLineChart(points, xAxisData, maxValue)
             }
         }
     }
@@ -111,70 +100,51 @@ fun StatsScreen(navController: NavController) {
 
 
 @Composable
-fun MakeLineChart(entries: List<Point>) {
-    val steps = 8
-    val xAxisData = AxisData.Builder()
-        .axisStepSize(25.dp)
-        .backgroundColor(Color.Transparent)
-        .steps(entries.size - 1)
-        .labelData { i -> i.toString() }
-        .labelAndAxisLinePadding(15.dp)
-        .axisLineColor(MaterialTheme.colorScheme.tertiary)
-        .axisLabelColor(MaterialTheme.colorScheme.tertiary)
-        .build()
-
-    val yAxisData = AxisData.Builder()
-        .steps(steps)
-        .backgroundColor(Color.Transparent)
-        .labelAndAxisLinePadding(20.dp)
-        .labelData { i ->
-            val yScale = (entries.maxByOrNull { it.y }?.y ?: 0f) / steps
-            (i * yScale).toString()
-        }
-        .axisLineColor(MaterialTheme.colorScheme.tertiary)
-        .axisLabelColor(MaterialTheme.colorScheme.tertiary)
-        .build()
-
-    val lineChartData = LineChartData(
-        linePlotData = LinePlotData(
-            lines = listOf(
-                Line(
-                    dataPoints = entries,
-                    lineStyle = LineStyle(
-                        color = MaterialTheme.colorScheme.tertiary,
-                        lineType = LineType.SmoothCurve(isDotted = false)
-                    ),
-                    intersectionPoint = IntersectionPoint(
-                        color = MaterialTheme.colorScheme.tertiary,
-                        radius = 6.dp
-                    ),
-                    selectionHighlightPoint = SelectionHighlightPoint(
-                        color = MaterialTheme.colorScheme.primary,
-                        radius = 6.dp
-                    ),
-                    ShadowUnderLine(
-                        alpha = 0.5f,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.inversePrimary,
-                                Color.Transparent
-                            )
-                        )
-                    ),
-                    SelectionHighlightPopUp()
-                )
-            )
-        ),
-        backgroundColor = MaterialTheme.colorScheme.surface,
-        xAxisData = xAxisData,
-        yAxisData = yAxisData,
-        gridLines = GridLines()
-    )
+fun MakeLineChart(points: List<Point>, xAxisData: AxisData, maxValue: Int) {
     LineChart(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp),
-        lineChartData = lineChartData
+        lineChartData = LineChartData(
+            linePlotData = LinePlotData(
+                lines = listOf(
+                    Line(
+                        dataPoints = points,
+                        lineStyle = LineStyle(
+                            color = MaterialTheme.colorScheme.tertiary,
+                            lineType = LineType.Straight()
+                        ),
+                        intersectionPoint = IntersectionPoint(color = MaterialTheme.colorScheme.tertiary, radius = 6.dp),
+                        selectionHighlightPoint = SelectionHighlightPoint(
+                            color = MaterialTheme.colorScheme.primary,
+                            radius = 6.dp
+                        ),
+                        ShadowUnderLine(
+                            alpha = 0.5f,
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.inversePrimary,
+                                    Color.Transparent
+                                )
+                            )
+                        ),
+                        SelectionHighlightPopUp()
+                    )
+                )
+            ),
+            backgroundColor = MaterialTheme.colorScheme.surface,
+            xAxisData = xAxisData,
+            yAxisData = AxisData.Builder()
+                .steps(5)
+                .labelData { index ->
+                    val yScale = maxValue / 5
+                    "${(index * yScale).toInt()}"
+                }
+                .backgroundColor(Color.Transparent)
+                .axisLineColor(MaterialTheme.colorScheme.tertiary)
+                .axisLabelColor(MaterialTheme.colorScheme.tertiary)
+                .build()
+        )
     )
 }
 

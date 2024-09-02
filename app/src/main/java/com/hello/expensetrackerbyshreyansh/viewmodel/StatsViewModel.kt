@@ -1,23 +1,25 @@
 package com.hello.expensetrackerbyshreyansh.viewmodel
 
 import android.content.Context
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import co.yml.charts.axis.AxisData
 import co.yml.charts.common.model.Point
-import com.hello.expensetrackerbyshreyansh.Utils
 import com.hello.expensetrackerbyshreyansh.data.ExpenseDataBase
 import com.hello.expensetrackerbyshreyansh.data.dao.ExpenseDao
 import com.hello.expensetrackerbyshreyansh.data.model.ExpenseSummary
 
 class StatsViewModel(dao: ExpenseDao) : ViewModel() {
     val entries = dao.getAllExpensesByDate()
-    fun getEntriesForChart(entries: List<ExpenseSummary>): List<Point> {
+    fun getEntriesForChart(entries: List<ExpenseSummary>): Pair<List<Point>, AxisData> {
         val sortedEntries = entries.sortedBy { it.date }
         val minDate = sortedEntries.minByOrNull { it.date }?.date ?: 0L
         val maxDate = sortedEntries.maxByOrNull { it.date }?.date ?: 0L
         val daysRange = ((maxDate - minDate) / (24 * 60 * 60 * 1000)).toInt() + 1 // Add 1 to include the last day
 
-        return entries.mapIndexed { index, entry ->
+        val points = sortedEntries.mapIndexed { index, entry ->
             val daysSinceMinDate = ((entry.date - minDate) / (24 * 60 * 60 * 1000)).toInt()
             Point(
                 x = daysSinceMinDate.toFloat(),
@@ -25,13 +27,23 @@ class StatsViewModel(dao: ExpenseDao) : ViewModel() {
                 description = formatDateForXAxis(entry.date, minDate)
             )
         }
+
+        val xAxisData = AxisData.Builder()
+            .axisStepSize(35.dp)
+            .steps(daysRange)
+            .labelData { index ->
+                formatDateForXAxis(minDate + (index * 24 * 60 * 60 * 1000), minDate)
+            }
+            .backgroundColor(Color.Transparent)
+            .build()
+
+        return Pair(points, xAxisData)
     }
 
     private fun formatDateForXAxis(date: Long, minDate: Long): String {
         return when (val daysSinceMinDate = ((date - minDate) / (24 * 60 * 60 * 1000)).toInt()) {
-            0 -> "Today"
-            1 -> "Yesterday"
-            else -> "$daysSinceMinDate days ago"
+            0 -> "T"
+            else -> "${daysSinceMinDate}D"
         }
     }
 }
