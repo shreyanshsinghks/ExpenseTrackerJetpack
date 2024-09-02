@@ -11,14 +11,14 @@ object Utils {
         return dateFormatter.format(dateInMillis)
     }
 
-    fun getMilliFromDate(dateFormat: String?): Long {
-        var date = Date()
-        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        try {
-            date = formatter.parse(dateFormat)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-        return date.time
-    }
+//    fun getMilliFromDate(dateFormat: String?): Long {
+//        var date = Date()
+//        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+//        try {
+//            date = formatter.parse(dateFormat)
+//        } catch (e: ParseException) {
+//            e.printStackTrace()
+//        }
+//        return date.time
+//    }
 }

@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.hello.expensetrackerbyshreyansh"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -75,6 +75,6 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.mpandroidchart)
+    implementation(libs.ycharts)
 
 }
