@@ -1,4 +1,4 @@
-package com.hello.expensetrackerbyshreyansh.screens
+package com.hello.expensetrackerbyshreyansh.feature.add_expense
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
